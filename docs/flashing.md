@@ -145,6 +145,18 @@ balena fleet endpoint (balenaCloud or openBalena). See your fleet's docs.
   a direct USB 2.0 port on the host or a powered USB 2.0 hub is most reliable.
 - Confirm you're plugged into the Core SE's `Console / Service` micro-USB
   port (the one near the SD card slot), not the standard USB hosts.
+- Power-on order matters: `rpiboot` must be running **before** you apply
+  24 V. If you plug the cable in after the Core SE is already running, the
+  bootrom has already booted from eMMC and won't fall into mass-storage mode.
+
+**The eMMC enumerates as 0 bytes (or under 1 GB).**
+- A known firmware quirk of the CM4S bootrom: `rpiboot` successfully loads
+  the bootcode but the eMMC controller doesn't initialize, so the host sees
+  a 0-byte (or near-empty) block device. The `flash.sh` helper detects this
+  and refuses to write.
+- Recovery: unplug 24 V, unplug the micro-USB, wait 10 s, then redo the
+  procedure from step 1. Use a different USB port on the host if the
+  problem repeats.
 
 **The eMMC block device shows the wrong size.**
 - `rpiboot` should have completed before the host enumerates the device. If

@@ -29,6 +29,16 @@ What this does:
 - `group_add: [picontrol]` adds the container's primary user to the
   `picontrol` group inside the container, satisfying the `0660 root:picontrol`
   permissions on `/dev/piControl0` enforced by the host udev rule.
+
+  > **balenaOS-specific:** name-based `group_add` (e.g. `group_add: [picontrol]`)
+  > works because the balena supervisor resolves the group name against the
+  > **host's** `/etc/group` and injects the host GID into the container.
+  > Vanilla Docker Engine on Raspberry Pi OS / Debian does **not** do this:
+  > there, `group_add` only matches a group inside the container image, so
+  > tests on a non-balenaOS host with the same compose file may show
+  > permission-denied even when `picontrol` exists on the host. If you need
+  > to run the same compose file on both, add the user to the picontrol GID
+  > **by number** inside your Dockerfile, matching the host GID.
 - The `/etc/revpi` bind mount lets `piTest` / `piControl` find
   `config.rsc` (the process-image topology produced by PiCtory or hand-rolled).
 

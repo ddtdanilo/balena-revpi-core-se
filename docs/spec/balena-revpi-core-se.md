@@ -66,7 +66,7 @@ In scope for v0.1.0:
 - F5. `flasher` image boots from external storage and writes the embedded `prod` image to internal eMMC, then reboots.
 - F6. `/dev/piControl0` is present after first boot, owned by `root:picontrol`, mode `0660`.
 - F7. `piTest -d` from the host (and from a container with the device mapped) lists at least the base RevPi device entry with zero PiBridge modules attached.
-- F8. RTC (PCF85063A) is probed by the kernel; `hwclock -r/-w` round-trips correctly; the supercap holds the clock for ≥ 24 h.
+- F8. RTC (PCF85063A) is probed by the kernel; `hwclock -r/-w` round-trips correctly; the supercap holds the clock across a ≥ 30 s power-off (full validation of the ≥ 24 h supercap soak is informational, not a build gate — see § 13).
 - F9. The HAT EEPROM article number and MAC are readable (e.g. via `piSerial` or direct I²C read on bus 10, address 0x50).
 - F10. Ethernet (`lan95xx` on USB) enumerates, obtains a DHCP lease on X1.
 - F11. The BCM2711 internal watchdog is exposed (`/dev/watchdog`) and heartbeated by the supervisor.
@@ -148,7 +148,9 @@ substrate. The only "payload" surfaces are:
 - **RTC battery / supercap empty.** On first boot from a fully discharged unit the RTC reads garbage. The supervisor's NTP sync must succeed before any `hwclock -w` runs. Acceptance: documented.
 - **eMMC near-full on 8 GB variant.** `IMAGE_ROOTFS_SIZE` is tuned for the 8 GB SKU. Acceptance: `prod` image size < 372 MiB and total slot A + slot B + state partition < 7 GB.
 - **Failed `rpiboot`.** Some host USB controllers don't enumerate the CM4S in mass-storage mode reliably. Documented in `docs/flashing.md` with a USB 2.0 hub workaround.
+- **Zero-byte eMMC enumeration after `rpiboot`.** Known CM4S bootrom quirk: rpiboot loads but the eMMC controller fails to initialize, exposing a 0-byte (or sub-1 GB) block device. `scripts/flash.sh` detects this and refuses to write; recovery is a power-cycle of the device.
 - **Mid-write power loss during `flasher` install.** The flasher image must leave the eMMC in a recoverable state (re-runnable). Acceptance: power-cycle during flashing returns the device to its prior state (still SD-bootable into the flasher).
+- **`flash.sh flasher` misuse.** A flasher image is meant to be SD-booted, not eMMC-written. `scripts/flash.sh` refuses this combination and points the user at the SD-card workflow.
 
 ## 9. Acceptance criteria
 
@@ -203,7 +205,7 @@ before tagging v0.1.0:
 
 | ID | Risk | Mitigation |
 |---|---|---|
-| R1 | Overlay names in `linux-kunbus` 6.6.84 differ from PR #1285's expectations (`revpi-core-se-2022-overlay.dtb` may have been renamed). | First-build check; fall back to fetching the correct overlay name from `RevolutionPi/linux` `revpi-6.6` branch. |
+| R1 | Overlay names in `linux-kunbus` 6.6.84 differ from PR #1285's expectations. | **Validated 2026-05-15:** `revpi-6.6` branch of `RevolutionPi/linux` carries `revpi-core-overlay.dts`, `revpi-core-dt-blob-overlay.dts`, and `revpi-core-se-2022-overlay.dts` (`arch/arm/boot/dts/overlays/`). The `*-overlay.dtb` naming convention used in our machine `.conf` matches the working `revpi-core-3.conf` and `revpi-connect-s.conf` in upstream master. Risk closed; document the validation in `CHANGELOG.md`. |
 | R2 | `dt-blob.bin` not required on CM4S (Connect S doesn't ship one). | Build twice, with and without, and validate `piControl` binding both ways. Adjust `BALENA_BOOT_PARTITION_FILES` if not needed. |
 | R3 | 8 GB image budget too tight after A/B + state partitions. | Profile actual image size on the 16 GB unit before claiming 8 GB support. Trim `IMAGE_INSTALL` if needed. |
 | R4 | Balena supervisor LED conflict more invasive than the documented workaround. | Verify on the bench. Worst case: ship a small systemd unit that nulls `LED_FILE` at boot. |

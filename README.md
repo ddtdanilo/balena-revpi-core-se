@@ -93,8 +93,10 @@ cd balena-revpi-core-se
 #   balena-image-revpi-core-se.balenaos-img
 ```
 
-Build flavors: `dev` (default), `prod`, `flasher`. Build time is typically
-1 – 4 hours depending on host CPU and whether `sstate-cache` is warm.
+Build flavors: `dev` (default), `prod`, `flasher`. First clean build on a
+modern 16 vCPU x86_64 host with no `sstate-cache` typically takes
+**4 – 8 hours**. Warm-cache incremental rebuilds drop to **15 – 45 min**.
+Slower hosts (or 8 vCPU) can take significantly longer.
 
 ### 2. Flash the Core SE (requires the hardware + a host with `rpiboot`)
 
@@ -145,7 +147,12 @@ Yocto needs an x86_64 Linux host (Ubuntu 22.04 recommended), booted with
 `systemd.unified_cgroup_hierarchy=0` for cgroups v1. Recommended sizing:
 
 - 16+ vCPU, 32+ GB RAM, 150+ GB free disk (build dir + sstate cache).
-- First clean build: ~2–4 hours. Warm sstate rebuilds: ~15–30 min.
+- First clean build: 4 – 8 h (modern 16 vCPU x86_64 host). Warm sstate
+  incremental rebuilds: 15 – 45 min.
+- cgroups v1 required: boot the host kernel with
+  `systemd.unified_cgroup_hierarchy=0` (Ubuntu 22.04 LTS supports this).
+  `scripts/build.sh` enforces this by default; set `ALLOW_CGROUPS_V2=1`
+  in the environment to override the check at your own risk.
 
 Reasonable AWS EC2 spec: `c6i.4xlarge` or `m6i.4xlarge` (Ubuntu 22.04 AMI),
 150 GB gp3 EBS. Terminate when done; mount a separate EBS for `sstate-cache`

@@ -64,6 +64,12 @@ so no rules changes are required.
 
 ---
 
+> **Status:** This is a **pre-validation proposal**. The validation table
+> at the end of this document will be populated once the Sento bench tests
+> against a Core SE 16 GB complete. Until then, treat this as a credible
+> technical blueprint backed by a public reference implementation, not as
+> a fully-tested release candidate.
+
 ## Hardware specification
 
 | Item | Value |
