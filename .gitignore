@@ -1,0 +1,34 @@
+# Upstream balena-raspberrypi clone produced by scripts/bootstrap.sh
+/upstream/
+
+# Yocto build output (when build is run in-tree)
+/build/
+/sstate-cache/
+/downloads/
+/tmp/
+
+# Local environment overrides
+.env
+.envrc
+*.local
+
+# macOS / editor noise
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build artifacts and release archives
+*.img
+*.img.zip
+*.img.xz
+*.tar.gz
+*.tar.xz
+/releases/
+
+# Python venvs for any helper tooling
+.venv/
+__pycache__/
+*.pyc

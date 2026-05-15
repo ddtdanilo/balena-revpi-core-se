@@ -1,0 +1,29 @@
+From 0000000000000000000000000000000000000002 Mon Sep 17 00:00:00 2001
+From: Danilo Diaz <danilodt@gmail.com>
+Date: Wed, 14 May 2026 23:00:01 -0500
+Subject: [PATCH 2/3] meta-balena-raspberrypi: local.conf.sample: list
+ revpi-core-se
+
+Add revpi-core-se to the commented-out MACHINE list in the sample
+local.conf so developers can uncomment it for a manual bitbake build.
+
+Reproduces the equivalent change from closed upstream PR #1285,
+rebased onto balena-os/balena-raspberrypi @ v6.12.3+rev4.
+---
+ layers/meta-balena-raspberrypi/conf/samples/local.conf.sample | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/layers/meta-balena-raspberrypi/conf/samples/local.conf.sample b/layers/meta-balena-raspberrypi/conf/samples/local.conf.sample
+--- a/layers/meta-balena-raspberrypi/conf/samples/local.conf.sample
++++ b/layers/meta-balena-raspberrypi/conf/samples/local.conf.sample
+@@ -5,6 +5,7 @@
+ #MACHINE ?= "raspberrypi3-64"
+ #MACHINE ?= "revpi-connect-s"
+ #MACHINE ?= "revpi-connect-4"
++#MACHINE ?= "revpi-core-se"
+ #MACHINE ?= "raspberrypi4-64"
+ #MACHINE ?= "raspberrypi400-64"
+ #MACHINE ?= "raspberrypicm4-ioboard"
+--
+2.43.0
+

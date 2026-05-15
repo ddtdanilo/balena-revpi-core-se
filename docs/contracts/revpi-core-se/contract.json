@@ -1,0 +1,96 @@
+{
+  "slug": "revpi-core-se",
+  "version": "1",
+  "type": "hw.device-type",
+  "aliases": [],
+  "name": "Revolution Pi Core SE",
+  "assets": {
+    "logo": {
+      "url": "./revpi-core-se.svg",
+      "name": "logo"
+    }
+  },
+  "data": {
+    "arch": "aarch64",
+    "hdmi": false,
+    "led": true,
+    "audio": false,
+    "storage": {
+      "internal": true
+    },
+    "connectivity": {
+      "bluetooth": false,
+      "wifi": false,
+      "cellular": false,
+      "ethernet": true
+    },
+    "media": {
+      "altBoot": [],
+      "defaultBoot": "internal",
+      "installation": "external"
+    },
+    "is_private": false,
+    "flashProtocol": "RPIBOOT",
+    "instructions": {
+      "linux": [
+        "While not having the Revolution Pi board powered, connect your system to the board's USB Console / Service port via a micro-USB cable.",
+        "Power on the Revolution Pi board (24 V DC).",
+        "Write the OS to the internal eMMC. We recommend using [Etcher](http://www.etcher.io/) or `dd` with care.",
+        "When flashing is complete, power off the board and unplug the micro-USB cable.",
+        "Connect Ethernet on the X1 RJ45 and power the board on."
+      ],
+      "osx": [
+        "While not having the Revolution Pi board powered, connect your system to the board's USB Console / Service port via a micro-USB cable.",
+        "Power on the Revolution Pi board (24 V DC).",
+        "Write the OS to the internal eMMC. We recommend using [Etcher](http://www.etcher.io/).",
+        "When flashing is complete, power off the board and unplug the micro-USB cable.",
+        "Connect Ethernet on the X1 RJ45 and power the board on."
+      ],
+      "windows": [
+        "While not having the Revolution Pi board powered, connect your system to the board's USB Console / Service port via a micro-USB cable.",
+        "Power on the Revolution Pi board (24 V DC).",
+        "Write the OS to the internal eMMC. We recommend using [Etcher](http://www.etcher.io/).",
+        "When flashing is complete, power off the board and unplug the micro-USB cable.",
+        "Connect Ethernet on the X1 RJ45 and power the board on."
+      ]
+    },
+    "supervisorOnboardOSDeviceType": false,
+    "gpio": {
+      "uart0": [14, 15]
+    },
+    "lcd": false,
+    "options": [
+      {
+        "options": [
+          {
+            "name": "Network",
+            "slug": "network",
+            "message": "Network type",
+            "type": "list",
+            "default": "ethernet",
+            "choices": ["ethernet"],
+            "choicesLabels": {
+              "ethernet": "Ethernet only"
+            }
+          }
+        ],
+        "isGroup": true,
+        "isCollapsible": false,
+        "name": "Network",
+        "message": "Network",
+        "slug": "network"
+      }
+    ]
+  },
+  "partials": {
+    "bootDevice": [
+      "Apply power to the Revolution Pi Core SE."
+    ],
+    "connectDevice": [
+      "Connect the Core SE's micro-USB Console / Service port to your host using a USB data cable."
+    ],
+    "disconnectDevice": [
+      "When flashing is complete, power off the Core SE and unplug the micro-USB cable."
+    ]
+  }
+}

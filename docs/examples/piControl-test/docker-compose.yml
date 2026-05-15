@@ -1,0 +1,20 @@
+version: '2.4'
+
+services:
+  picontrol-test:
+    build: .
+    privileged: false
+    devices:
+      - /dev/piControl0:/dev/piControl0
+    group_add:
+      - picontrol
+    volumes:
+      - /etc/revpi:/etc/revpi:ro
+    environment:
+      - LED_FILE=/dev/null
+    restart: "no"
+    command: >
+      sh -c "set -eux;
+             test -c /dev/piControl0;
+             piTest -d;
+             echo 'piControl health check: OK'"

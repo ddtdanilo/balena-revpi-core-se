@@ -1,0 +1,41 @@
+From 0000000000000000000000000000000000000003 Mon Sep 17 00:00:00 2001
+From: Danilo Diaz <danilodt@gmail.com>
+Date: Wed, 14 May 2026 23:00:02 -0500
+Subject: [PATCH 3/3] meta-balena-raspberrypi: balena-image.inc: revpi-core-se
+ size and dt-blob
+
+Set IMAGE_ROOTFS_SIZE for revpi-core-se mirroring revpi-connect-s and
+revpi-connect-4. Map the RevPi Core device-tree blob to /dt-blob.bin in
+the boot partition, mirroring the existing entry for revpi-connect-s
+(both Core SE and Connect S are CM4S-based and use the dt-blob pattern).
+
+Reproduces the equivalent changes from closed upstream PR #1285,
+adapted to the current consolidated balena-image.inc layout in
+balena-os/balena-raspberrypi @ v6.12.3+rev4.
+---
+ .../recipes-core/images/balena-image.inc      | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/layers/meta-balena-raspberrypi/recipes-core/images/balena-image.inc b/layers/meta-balena-raspberrypi/recipes-core/images/balena-image.inc
+--- a/layers/meta-balena-raspberrypi/recipes-core/images/balena-image.inc
++++ b/layers/meta-balena-raspberrypi/recipes-core/images/balena-image.inc
+@@ -22,6 +22,7 @@ IMAGE_ROOTFS_SIZE:raspberrypi5="655360"
+ # Increase Root File system size
+ IMAGE_ROOTFS_SIZE:revpi-connect-s = "372736"
+ IMAGE_ROOTFS_SIZE:revpi-connect-4 = "372736"
++IMAGE_ROOTFS_SIZE:revpi-core-se = "372736"
+
+ # Customize balenaos-img
+ BALENA_IMAGE_BOOTLOADER:rpi = "rpi-bootfiles"
+@@ -43,6 +44,8 @@ BALENA_BOOT_PARTITION_FILES:append:raspberrypi5 = " \
+
+ BALENA_BOOT_PARTITION_FILES:append:revpi-connect-s = " revpi-connect-dt-blob-overlay.dtb:/dt-blob.bin"
+
++BALENA_BOOT_PARTITION_FILES:append:revpi-core-se = " revpi-core-dt-blob-overlay.dtb:/dt-blob.bin"
++
+ python overlay_dtbs_handler () {
+     # Add all the dtb files programatically
+     for soc_fam in d.getVar('SOC_FAMILY', True).split(':'):
+--
+2.43.0
+
