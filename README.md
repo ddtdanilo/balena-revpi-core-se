@@ -221,11 +221,13 @@ A working public fork serves users today; CDS is the path to upstream.
 ## Roadmap
 
 - [x] Public scaffold + documentation + reproducible overlay/patches
-- [ ] First clean build of `dev` image on Linux x86_64 host
+- [x] First clean build of `dev` image on Linux x86_64 host —
+      **[`v0.1.0-rc1`](https://github.com/ddtdanilo/balena-revpi-core-se/releases/tag/v0.1.0-rc1)**
+      (2026-05-16, 1 h 19 min on AWS EC2 c6i.4xlarge)
 - [ ] Flash + on-device validation on Core SE 16 GB (full 13-item acceptance
       checklist in [`docs/spec/balena-revpi-core-se.md`](docs/spec/balena-revpi-core-se.md))
 - [ ] Build `prod` and `flasher` flavors
-- [ ] First public release (`v0.1.0`) with `.img.zip` artifacts attached
+- [ ] First stable release (`v0.1.0`) with `.img.xz` artifacts attached
 - [ ] Validate 8 GB and 32 GB eMMC variants
 - [ ] Engage Kunbus for the Balena CDS handoff
 

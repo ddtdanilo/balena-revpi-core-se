@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0-rc1] — 2026-05-16
+
+First successful build artifact. **Not yet hardware-validated** — this is
+a release candidate, not a stable release.
+
+### Added
+- First reproducible Yocto build of `balena-image-revpi-core-se.balenaos-img`
+  (dev flavor) on AWS EC2 `c6i.4xlarge`. Wall time: 1 h 19 min. Final
+  size: 996 MB raw → 151 MB compressed (xz). sha256 of `.img.xz`:
+  `57bd1f8d76ed707de9fc7752ba7d2509dcd9dc299b43c6a88e833e943c669cea`.
+- `infrastructure/yocto/local.conf-overrides.txt` — appended by
+  `scripts/bootstrap.sh` to upstream's `local.conf.sample`. Currently
+  contains the `FETCHCMD_wget` User-Agent override that fixes the
+  crates.io HTTP 403 against the default wget UA, which would otherwise
+  break the `fatrw` and `healthdog` recipe fetches.
+- `scripts/bootstrap.sh` now idempotently appends those overrides
+  (guarded by a marker comment).
+
+### Known gaps
+- Pending: hardware validation on a Revolution Pi Core SE 16 GB unit
+  (the 13-item acceptance checklist in spec § 9). Items A2–A13 are
+  outstanding. The build artifact passes A1 (build succeeds) and A13
+  (image size well under 7 GB).
+- Pending: `prod` and `flasher` image flavors (planned for `v0.1.0-rc2`
+  if `dev` validates).
+- Pending: validation on 8 GB and 32 GB Core SE variants (the spec
+  asserts a single `MACHINE` covers them; needs empirical confirmation).
+
 ### Added
 - Initial public scaffold of a balenaOS BSP for the Revolution Pi Core SE
   family (8 / 16 / 32 GB eMMC variants) based on Kunbus' CM4S industrial PLC.
