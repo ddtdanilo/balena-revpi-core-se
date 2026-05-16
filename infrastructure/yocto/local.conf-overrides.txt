@@ -1,0 +1,23 @@
+# Yocto local.conf overrides appended by scripts/bootstrap.sh.
+#
+# Each line is a bitbake variable assignment that gets appended to
+# upstream's `layers/meta-balena-raspberrypi/conf/samples/local.conf.sample`
+# during bootstrap. barys reads the sample to seed `build/conf/local.conf`,
+# so the overrides take effect on every build.
+#
+# Only put truly universal workarounds here. Per-build or per-flavor
+# settings belong in `scripts/build.sh`.
+
+# --- crates.io / wget User-Agent workaround --------------------------------
+# crates.io returns HTTP 403 to the default wget User-Agent ("Wget/x.x.x").
+# Bitbake's wget fetcher uses /usr/bin/env wget, so without this override
+# every `crate://crates.io/<name>/<version>` fetch fails — most visibly the
+# fatrw and healthdog recipes that pull a couple dozen Rust crates each.
+#
+# CRITICAL: the variable is literally `FETCHCMD_wget` with an underscore.
+# It is NOT an override of a variable called `FETCHCMD`. Using the colon
+# syntax `FETCHCMD:wget` silently no-ops because there is no such override
+# spec on `FETCHCMD`. The value below is read verbatim as the wget command;
+# the single quotes around the User-Agent are shell-quoted so wget receives
+# the full string as one argument.
+FETCHCMD_wget = "/usr/bin/env wget -t 2 -T 100 --user-agent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36'"

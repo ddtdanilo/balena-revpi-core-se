@@ -178,6 +178,36 @@ fi
 shopt -u nullglob
 
 # ---------------------------------------------------------------------------
+# Append local.conf overrides to upstream's local.conf.sample.
+# barys reads the sample to seed build/conf/local.conf, so these overrides
+# take effect on every build. Idempotent (won't re-append if a marker is
+# already present).
+# ---------------------------------------------------------------------------
+LOCAL_CONF_OVERRIDES="${REPO_ROOT}/infrastructure/yocto/local.conf-overrides.txt"
+LOCAL_CONF_SAMPLE="${UPSTREAM_DIR}/layers/meta-balena-raspberrypi/conf/samples/local.conf.sample"
+LOCAL_CONF_MARKER="# === balena-revpi-core-se overrides start ==="
+
+if [[ -f "$LOCAL_CONF_OVERRIDES" && -f "$LOCAL_CONF_SAMPLE" ]]; then
+	if grep -qF "$LOCAL_CONF_MARKER" "$LOCAL_CONF_SAMPLE" 2>/dev/null; then
+		log "local.conf overrides already appended; skipping"
+	else
+		log "appending local.conf overrides from $LOCAL_CONF_OVERRIDES"
+		if [[ "$DRY_RUN" == "true" ]]; then
+			printf '[bootstrap] DRY-RUN: would append %s into %s\n' \
+				"$LOCAL_CONF_OVERRIDES" "$LOCAL_CONF_SAMPLE"
+		else
+			{
+				printf '\n%s\n' "$LOCAL_CONF_MARKER"
+				cat "$LOCAL_CONF_OVERRIDES"
+				printf '# === balena-revpi-core-se overrides end ===\n'
+			} >> "$LOCAL_CONF_SAMPLE"
+		fi
+	fi
+elif [[ -f "$LOCAL_CONF_OVERRIDES" && ! -f "$LOCAL_CONF_SAMPLE" && "$DRY_RUN" != "true" ]]; then
+	die "local.conf.sample missing — bootstrap is incomplete: $LOCAL_CONF_SAMPLE"
+fi
+
+# ---------------------------------------------------------------------------
 # Sanity check the result
 # ---------------------------------------------------------------------------
 for rel in "${OVERLAY_FILES[@]}"; do
